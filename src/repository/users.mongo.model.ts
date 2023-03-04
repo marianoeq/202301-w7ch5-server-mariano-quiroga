@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { User } from '../entities/user.mode';
+import { User } from '../entities/user.model';
 
 const userSchema = new Schema<User>({
   name: { type: String, required: true },

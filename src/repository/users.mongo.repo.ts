@@ -1,6 +1,6 @@
 import { Repo } from './repo.interface.js';
 import { UserModel } from './users.mongo.model.js';
-import { User } from '../entities/user.mode.js';
+import { User } from '../entities/user.model.js';
 import createDebug from 'debug';
 
 const debug = createDebug('W7: user-mongo-repo');
@@ -21,7 +21,7 @@ export class UserMongoRepo implements Repo<User> {
   }
 
   async query(): Promise<User[]> {
-    const data = await UserModel.find().populate('friends');
+    const data = await UserModel.find().populate('friends', 'enemies');
     return data;
   }
 
@@ -33,7 +33,7 @@ export class UserMongoRepo implements Repo<User> {
 
   async create(newUser: Partial<User>): Promise<User> {
     const data = await UserModel.create(newUser);
-    if (!data) throw new Error('Not found');
+
     return data;
   }
 
