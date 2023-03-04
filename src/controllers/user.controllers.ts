@@ -2,7 +2,8 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { Repo } from '../repository/repo.interface';
 import { User } from '../entities/user.model';
-import { Auth } from '../helpers/auth';
+import { Auth, PayloadToken } from '../helpers/auth';
+import { RequestPlus } from '../interceptor/authenticator';
 const debug = createDebug('W7: controller');
 
 export class UserControllers {
@@ -68,7 +69,7 @@ export class UserControllers {
     }
   }
 
-  async addFriend(req: RequesPlus, res: Response, next: NextFunction) {
+  async addFriend(req: RequestPlus, res: Response, next: NextFunction) {
     try {
       debug('add friend');
       const userId = req.dataPlus?.id;
