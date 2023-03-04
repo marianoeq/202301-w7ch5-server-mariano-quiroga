@@ -11,5 +11,6 @@
     'db',
     'user.monogo.model.ts',
     'things.mongo.model.ts',
+    'config.ts',
   ],
 };
