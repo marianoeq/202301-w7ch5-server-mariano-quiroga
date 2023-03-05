@@ -21,12 +21,22 @@ export class UsersMongoRepo implements Repo<User> {
   }
 
   async query(): Promise<User[]> {
-    const data = await UserModel.find().populate('friends', 'enemies');
+    const data = await UserModel.find()
+      .populate('friends', {
+        friends: 0,
+        enemies: 0,
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     return data;
   }
 
   async queryId(id: string): Promise<User> {
-    const data = await UserModel.findById(id);
+    const data = await UserModel.findById(id)
+      .populate('friends', {
+        friends: 0,
+        enemies: 0,
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     if (!data) throw new Error('ID not found');
     return data;
   }
@@ -40,11 +50,12 @@ export class UsersMongoRepo implements Repo<User> {
 
   async search(query: { key: string; value: unknown }): Promise<User[]> {
     const data = await UserModel.find({ [query.key]: [query.value] });
+
     return data;
   }
 
   async update(user: Partial<User>): Promise<User> {
-    const data = await UserModel.findByIdAndUpdate(user);
+    const data = await UserModel.findByIdAndUpdate(user.id, user);
     if (!data) throw new Error('ID not found');
     return data;
   }

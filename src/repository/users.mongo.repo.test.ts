@@ -6,6 +6,11 @@ jest.mock('./users.mongo.model.js');
 describe('Given UsersMongoRepo repository', () => {
   const repo = UsersMongoRepo.getInstance();
 
+  const mockPopulateFunction = (mockPopulateValue: unknown) => ({
+    populate: jest.fn().mockImplementation(() => ({
+      populate: jest.fn().mockResolvedValue(mockPopulateValue),
+    })),
+  });
   describe('When the repository is instanced', () => {
     test('Then, the repo should be instance of UsersMongoRepo', () => {
       expect(repo).toBeInstanceOf(UsersMongoRepo);
@@ -15,9 +20,9 @@ describe('Given UsersMongoRepo repository', () => {
   describe('When the query method is used', () => {
     test('Then it should return an empty array', async () => {
       const mockData = [] as unknown as User;
-      (UserModel.find as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockReturnValue(mockData),
-      }));
+      (UserModel.find as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockData)
+      );
       const result = await repo.query();
       expect(result).toEqual([]);
     });
@@ -25,14 +30,19 @@ describe('Given UsersMongoRepo repository', () => {
 
   describe('When the queryId method is used', () => {
     test('Then if the findById method resolve value to an object, it should return the object', async () => {
-      (UserModel.findById as jest.Mock).mockResolvedValue({ id: '1' });
+      const mockData = { id: '1' } as unknown as User;
+      (UserModel.findById as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockData)
+      );
       const result = await repo.queryId('1');
       expect(UserModel.findById).toHaveBeenCalled();
       expect(result).toEqual({ id: '1' });
     });
 
     test('Then if the findById method resolve value to null, it should throw an Error', async () => {
-      (UserModel.findById as jest.Mock).mockResolvedValue(null);
+      (UserModel.findById as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(null)
+      );
       expect(async () => repo.queryId('')).rejects.toThrow();
     });
   });
