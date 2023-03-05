@@ -1,14 +1,14 @@
 import { User } from '../entities/user.model.js';
 import { UserModel } from './users.mongo.model.js';
-import { UserMongoRepo } from './users.mongo.repo.js';
+import { UsersMongoRepo } from './users.mongo.repo.js';
 jest.mock('./users.mongo.model.js');
 
-describe('Given UserMongoRepo repository', () => {
-  const repo = UserMongoRepo.getInstance();
+describe('Given UsersMongoRepo repository', () => {
+  const repo = UsersMongoRepo.getInstance();
 
   describe('When the repository is instanced', () => {
-    test('Then, the repo should be instance of UserMongoRepo', () => {
-      expect(repo).toBeInstanceOf(UserMongoRepo);
+    test('Then, the repo should be instance of UsersMongoRepo', () => {
+      expect(repo).toBeInstanceOf(UsersMongoRepo);
     });
   });
 

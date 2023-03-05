@@ -5,7 +5,7 @@ export interface RequestPlus extends Request {
   dataPlus?: PayloadToken;
 }
 
-export async function authenticator(
+export async function logged(
   req: RequestPlus,
   _res: Response,
   next: NextFunction

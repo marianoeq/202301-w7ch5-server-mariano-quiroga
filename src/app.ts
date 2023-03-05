@@ -1,34 +1,52 @@
-import express, { Request, Response } from 'express';
-
-import cors from 'cors';
+import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import createDebug from 'debug';
+import { usersRouter } from './router/users.router';
+import cors from 'cors';
+import path from 'path';
+
+const debug = createDebug('W7CH5:app');
 
 export const app = express();
 
-app.disable('x-powered-by');
-const debug = createDebug('W7:app');
 const corsOptions = {
   origin: '*',
 };
 
-app.use(cors(corsOptions));
+app.disable('x-powered-by');
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cors(corsOptions));
 
-app.use((error: Error, _req: Request, res: Response) => {
-  debug('soy el middleware de errores');
-  const status = 500;
-  const statusMessage = 'Internal server error';
-  res.json([
-    {
+debug({ __dirname });
+app.use(express.static(path.resolve(__dirname, 'public')));
+
+app.use('/users', usersRouter);
+
+app.use(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (error: Error, _req: Request, resp: Response, next: NextFunction) => {
+    const status = 500;
+    const statusMessage = 'Internal server error';
+
+    resp.status(status);
+    resp.json({
       error: [
         {
           status,
           statusMessage,
         },
       ],
-    },
-  ]);
-  debug(status, statusMessage, error.message);
+    });
+    debug(status, statusMessage, error.message);
+  }
+);
+
+app.use('*', (_req, resp, next) => {
+  resp
+    .status(404)
+    .send(
+      `<h1>Sorry, the path is not valid. Did you mean "http://localhost:4040/users/"?<h1>`
+    );
+  next();
 });
