@@ -38,7 +38,7 @@ export class UsersController {
       });
       if (!data) throw new Error('data not found');
       res.json({
-        result: [data],
+        result: data,
       });
     } catch (error) {
       next(error);
@@ -70,8 +70,6 @@ export class UsersController {
 
   async login(req: Request, resp: Response, next: NextFunction) {
     try {
-      debug('login:post method');
-
       if (!req.body.email || !req.body.password)
         throw new Error('Unauthorized');
 
@@ -103,7 +101,7 @@ export class UsersController {
     }
   }
 
-  async addFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+  async addEnemyOrFriend(req: RequestPlus, resp: Response, next: NextFunction) {
     try {
       debug('addFriends method');
 
@@ -111,16 +109,22 @@ export class UsersController {
       if (!userId) throw new Error('Not found');
 
       const actualUser = await this.repoUser.queryId(userId);
-      debug('userId', actualUser);
 
-      const friendUser = await this.repoUser.queryId(req.params.id);
-      debug('Friend to add:', friendUser);
-      if (!friendUser) throw new Error('Not found');
+      const userToAdd = await this.repoUser.queryId(req.params.id);
 
-      if (actualUser.friends.find((item) => item.id === friendUser.id))
-        throw new Error('Not allowed');
+      if (!userToAdd) throw new Error('Not found');
 
-      actualUser.friends.push(friendUser);
+      if (req.url.startsWith('/add_friends')) {
+        if (actualUser.friends.find((item) => item.id === userToAdd.id))
+          throw new Error('Not allowed');
+        actualUser.friends.push(userToAdd);
+      }
+
+      if (req.url.startsWith('/add_enemies')) {
+        if (actualUser.enemies.find((item) => item.id === userToAdd.id))
+          throw new Error('Not allowed');
+        actualUser.enemies.push(userToAdd);
+      }
 
       this.repoUser.update(actualUser);
 
@@ -132,7 +136,11 @@ export class UsersController {
     }
   }
 
-  async removeFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+  async removeEnemyOrFriends(
+    req: RequestPlus,
+    resp: Response,
+    next: NextFunction
+  ) {
     try {
       debug('removeFriends method');
 
@@ -142,13 +150,25 @@ export class UsersController {
 
       const actualUser = await this.repoUser.queryId(userId);
 
-      const friendUser = await this.repoUser.queryId(req.params.id);
+      const userToAdd = await this.repoUser.queryId(req.params.id);
 
-      if (!friendUser) throw new Error('Not found');
+      if (!userToAdd) throw new Error('Not found');
 
-      actualUser.friends = actualUser.friends.filter(
-        (item) => item.id !== friendUser.id
-      );
+      if (req.url.startsWith('/remove_friends')) {
+        if (actualUser.friends.find((item) => item.id !== userToAdd.id))
+          throw new Error('User you try to remove is not in your list');
+        actualUser.friends = actualUser.friends.filter(
+          (item) => item.id !== userToAdd.id
+        );
+      }
+
+      if (req.url.startsWith('/remove_enemies')) {
+        if (actualUser.enemies.find((item) => item.id !== userToAdd.id))
+          throw new Error('User you try to remove is not in your list');
+        actualUser.enemies = actualUser.enemies.filter(
+          (item) => item.id !== userToAdd.id
+        );
+      }
 
       this.repoUser.update(actualUser);
 
