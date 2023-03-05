@@ -23,20 +23,20 @@ usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.patch(
   '/add_friends/:id',
   authorization,
-  controller.addFriends.bind(controller)
+  controller.addEnemyOrFriend.bind(controller)
 );
 usersRouter.patch(
   '/remove_friends/:id',
   authorization,
-  controller.removeFriends.bind(controller)
+  controller.removeEnemyOrFriends.bind(controller)
 );
 usersRouter.patch(
   '/add_enemies/:id',
   authorization,
-  controller.getAll.bind(controller)
+  controller.addEnemyOrFriend.bind(controller)
 );
 usersRouter.patch(
   '/remove_enemies/:id',
   authorization,
-  controller.addFriends.bind(controller)
+  controller.removeEnemyOrFriends.bind(controller)
 );
