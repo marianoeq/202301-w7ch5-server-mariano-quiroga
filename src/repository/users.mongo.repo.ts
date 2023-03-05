@@ -5,15 +5,15 @@ import createDebug from 'debug';
 
 const debug = createDebug('W7: user-mongo-repo');
 
-export class UserMongoRepo implements Repo<User> {
-  private static instance: UserMongoRepo;
+export class UsersMongoRepo implements Repo<User> {
+  private static instance: UsersMongoRepo;
 
-  public static getInstance(): UserMongoRepo {
-    if (!UserMongoRepo.instance) {
-      UserMongoRepo.instance = new UserMongoRepo();
+  public static getInstance(): UsersMongoRepo {
+    if (!UsersMongoRepo.instance) {
+      UsersMongoRepo.instance = new UsersMongoRepo();
     }
 
-    return UserMongoRepo.instance;
+    return UsersMongoRepo.instance;
   }
 
   private constructor() {
@@ -32,6 +32,7 @@ export class UserMongoRepo implements Repo<User> {
   }
 
   async create(newUser: Partial<User>): Promise<User> {
+    debug('Create method');
     const data = await UserModel.create(newUser);
 
     return data;

@@ -9,8 +9,7 @@
     'app.ts',
     'router',
     'db',
-    'user.monogo.model.ts',
-    'things.mongo.model.ts',
+    'users.monogo.model.ts',
     'config.ts',
   ],
 };
