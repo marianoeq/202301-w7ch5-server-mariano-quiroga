@@ -12,9 +12,9 @@ const controller = new UsersController(repoUsers);
 
 debug('Users Router');
 
+usersRouter.get('/', authorization, controller.getAll.bind(controller));
 usersRouter.post('/register', controller.register.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
-usersRouter.get('/', authorization, controller.getAll.bind(controller));
 usersRouter.patch(
   '/add_friends/:id',
   authorization,
