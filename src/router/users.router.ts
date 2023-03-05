@@ -13,6 +13,11 @@ const controller = new UsersController(repoUsers);
 debug('Users Router');
 
 usersRouter.get('/', authorization, controller.getAll.bind(controller));
+usersRouter.get(
+  '/get_one_user/:name',
+  authorization,
+  controller.getUserByName.bind(controller)
+);
 usersRouter.post('/register', controller.register.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.patch(

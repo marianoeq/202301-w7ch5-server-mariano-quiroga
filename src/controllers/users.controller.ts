@@ -14,14 +14,31 @@ export class UsersController {
     debug('Controller instanced');
   }
 
-  async getAll(req: Request, resp: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       debug('getAll method');
 
       const data = await this.repoUser.query();
 
-      resp.json({
+      res.json({
         results: data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserByName(req: Request, res: Response, next: NextFunction) {
+    try {
+      debug('get user by name');
+      if (!req.params.name) throw new Error('user name was not provided');
+      const data = await this.repoUser.search({
+        key: 'name',
+        value: req.params.name,
+      });
+      if (!data) throw new Error('data not found');
+      res.json({
+        result: [data],
       });
     } catch (error) {
       next(error);
@@ -91,13 +108,13 @@ export class UsersController {
       debug('addFriends method');
 
       const userId = req.dataPlus?.id;
-
       if (!userId) throw new Error('Not found');
 
       const actualUser = await this.repoUser.queryId(userId);
+      debug('userId', actualUser);
 
       const friendUser = await this.repoUser.queryId(req.params.id);
-
+      debug('Friend to add:', friendUser);
       if (!friendUser) throw new Error('Not found');
 
       if (actualUser.friends.find((item) => item.id === friendUser.id))
