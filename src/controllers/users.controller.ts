@@ -4,7 +4,7 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 
 import { Auth, PayloadToken } from '../helpers/auth.js';
-import { RequestPlus } from '../interceptors/logged';
+import { RequestPlus } from '../interceptors/authorization.js';
 
 const debug = createDebug('W7CH5:users-controller');
 
@@ -17,8 +17,8 @@ export class UsersController {
   async getAll(req: Request, resp: Response, next: NextFunction) {
     try {
       debug('getAll method');
-      const data2 = req.body;
-      const data = await this.repoUser.create(data2);
+
+      const data = await this.repoUser.query();
 
       resp.json({
         results: data,

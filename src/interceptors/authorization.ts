@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { Auth, PayloadToken } from '../helpers/auth';
+import { Auth, PayloadToken } from '../helpers/auth.js';
 
 export interface RequestPlus extends Request {
   dataPlus?: PayloadToken;
 }
 
-export async function logged(
+export async function authorization(
   req: RequestPlus,
   _res: Response,
   next: NextFunction

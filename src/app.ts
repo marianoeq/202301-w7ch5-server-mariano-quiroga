@@ -1,9 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import createDebug from 'debug';
-import { usersRouter } from './router/users.router';
+import { usersRouter } from './router/users.router.js';
 import cors from 'cors';
-import path from 'path';
 
 const debug = createDebug('W7CH5:app');
 
@@ -17,9 +16,6 @@ app.disable('x-powered-by');
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors(corsOptions));
-
-debug({ __dirname });
-app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.use('/users', usersRouter);
 
