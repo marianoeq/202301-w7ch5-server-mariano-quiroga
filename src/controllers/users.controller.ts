@@ -13,14 +13,14 @@ export class UsersController {
     debug('Controller instanced');
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(_req: Request, res: Response, next: NextFunction) {
     try {
       debug('getAll method');
 
       const data = await this.repoUser.query();
 
       res.json({
-        results: data,
+        results: [data],
       });
     } catch (error) {
       next(error);
