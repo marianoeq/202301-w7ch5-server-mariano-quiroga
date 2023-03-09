@@ -2,7 +2,6 @@ import { User } from '../entities/user.model.js';
 import { Repo } from '../repository/repo.interface.js';
 import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
-
 import { Auth, PayloadToken } from '../helpers/auth.js';
 import { RequestPlus } from '../interceptors/authorization.js';
 
@@ -92,9 +91,7 @@ export class UsersController {
 
       resp.status(202);
       resp.json({
-        results: {
-          token,
-        },
+        results: [{ token }],
       });
     } catch (error) {
       next(error);
